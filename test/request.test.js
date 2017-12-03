@@ -2,23 +2,63 @@ var sync = require('synchronize')
 
 const request = require('../lib/request')
 
-describe('CRUD Requests', () => {
-  it ('should make a synchronous get request when run in fiber', () => {
+request.setConfig({
+  baseURL: 'http://dbapi.io/db/coll'  // RESTHeart demo environment
+})
+
+//expect(houseForSale).toMatchObject(desiredHouse);
+describe('RESTHeart Synchronous Requests', () => {
+  it ('should insert a document, update it, then delete it all synchronously', done => {
     sync.fiber(() => {
-      var data = request.get('https://goalbookapp.com/toolkit/healthcheck')
-      data = request.get('https://postman-echo.com/get?hello=world')
-      expect(data).toBe(expect.anything())
-    })
-  })
-  it ('should make a synchronous post request when run in fiber', () => {
-    sync.fiber(() => {
-      console.log('before request')
-      var data = { "hello": "world" }
-      var resp = request.post('https://postman-echo.com/post', data)
-      console.log("post", resp)
-      var resp = request.get('https://postman-echo.com/get?hello=world')
-      console.log("get", resp)
-      expect(resp).toBe(expect.anything())
+      // write a doc to RESTHeart
+      var doc = { 
+        "hello": "world",
+        "foo": "bar"
+      }
+      var response = request.post(`/`, doc)
+      expect(response).toMatchObject({
+        status: 201,
+        data: ''
+      })
+
+      // get the mongo document id from the restheart response
+      var docurl = response.headers.location
+      var docurlsplit = docurl.split('/')
+      var docid = docurlsplit[docurlsplit.length - 1]
+      expect(docid).toBeTruthy()
+      
+      // get the doc
+      response = request.get(`/${docid}`)
+      expect(response).toMatchObject({
+        status: 200,
+        data: doc
+      })
+      
+      // update the doc
+      var patchdoc = {
+        "foo": "updated",
+        "new": "value"
+      }
+      response = request.patch(`/${docid}`, patchdoc)
+      expect(response).toMatchObject({
+        status: 200,
+        data: ''
+      })
+      
+      // get the updated doc
+      response = request.get(`/${docid}`)
+      expect(response).toMatchObject({
+        status: 200,
+        data: patchdoc
+      })
+      
+      // delete the doc
+      response = request.delete(`/${docid}`)
+      expect(response).toMatchObject({
+        status: 204,
+        data: ''
+      })
+      done()
     })
   })
 }) 
