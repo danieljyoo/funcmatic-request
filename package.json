@@ -6,8 +6,8 @@
   "scripts": {
     "test": "jest"
   },
-  "author": "danieljyoo@gmail.com",
-  "license": "Apache 2.0",
+  "author": "Daniel Jhin Yoo <danieljyoo@gmail.com> (https://github.com/danieljyoo)",
+  "license": "Apache-2.0",
   "devDependencies": {
     "jest": "^21.2.1"
   },
