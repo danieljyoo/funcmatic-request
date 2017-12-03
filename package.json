@@ -1,0 +1,17 @@
+{
+  "name": "funcmatic-request",
+  "version": "1.0.0-alpha",
+  "description": "A synchronous HTTP request client library that assumes to be running in a fiber on a Lambda Node execution environment. Essentially a synchronize.js wrapper around the axios http client.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "danieljyoo@gmail.com",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^21.2.1"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
